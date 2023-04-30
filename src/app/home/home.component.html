@@ -1,0 +1,70 @@
+<section class="content">
+  <div class="space"></div>
+
+  <div class="" style="color: #fff; font-size: 20px;">{{progress}}</div>
+
+  <div class="content__container">
+    <div class="player">
+      <div class="dashbroad">
+          <div class="dashbroad__cd">
+              <div class="dashbroad__cd--img" style="background-image:url({{presentImgSong}});"></div>
+          </div>
+          <div class="dashbroad__header">
+            <h3 class="dashbroad__title">Now playing:</h3>
+            <h2 class="dashbroad__name-song">{{presentNameSong}}</h2>
+        </div>
+
+        <audio
+        #audioOption
+        (click) = 'onAudioPlay()'
+        src="../../assets/music/song1.mp3"
+        id="audio"
+        >
+        </audio>
+      </div>
+
+      <div class="playlist">
+        <div class="playlist__song"
+        *ngFor="let item of listSongs;
+        let i = index"
+        [ngClass]="{'active' :checkIndexSelection(i)}"
+        (click)="onClickSong(i)"
+        >
+          <div class="playlist__box ">
+            <img src="{{item.image}}" class="playlist__song--img" alt="">
+            <div class="playlist__name">
+                <h3 class="playlist__title">{{item.name}}</h3>
+                <p class="playlist__author"> {{item.singer}}</p>
+            </div>
+          </div>
+          <div class="playlist__option">
+              <i class="fas fa-ellipsis-h"></i>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+
+
+  <app-menubar
+  (doClickPlay) = "audioOption.click()"
+  (doClickNext)="doNextSong()"
+  (doClickBackward)="doPrevSong()"
+  (doClickRandom)="onClickRandomSong()"
+  (doClickUndo)=" onClickRepeatSong()"
+
+  [controlToggle] = "className"
+  [isRandomActive]="isRandomActive"
+  [isUndoActive]="isUndoActive"
+  [progress]="progress"
+
+  ></app-menubar>
+
+
+
+</section>

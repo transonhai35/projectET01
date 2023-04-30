@@ -1,0 +1,63 @@
+.main {
+  padding: 10px;
+  background-color: #130C1C;
+}
+
+.control{
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: #fff;
+
+  &__toggle{
+    display: flex;
+    justify-content: center;
+
+    &--play{
+      display: block;
+      padding: 15px;
+    }
+  }
+
+  &__warp {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color:  var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+}
+
+.play .control__toggle-pause{
+  display: none;
+}
+
+.play .control__toggle-play{
+  display: block;
+}
+
+
+.progress{
+  margin-bottom: 10px;
+  width: 100%;
+  color: white;
+}
+
+
+.a-2{
+  flex: 0 0 20%;
+  max-width: 20%;
+  text-align: center;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.active {
+  color: #3F1D52;
+}
