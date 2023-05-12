@@ -7,12 +7,12 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
   providedIn: 'root'
 })
 export class DataProgressService {
-  private dataProgressSubject = new Subject<number>();
+  private dataProgressSubject = new Subject<any>();
   public dataProgressObs = this.dataProgressSubject.asObservable();
 
   constructor() {}
 
-  public set dataProgress (value : number) {
+  public set dataProgress (value : any) {
     this.dataProgressSubject.next(value);
   }
 }

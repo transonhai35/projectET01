@@ -1,59 +1,79 @@
+import { PlayerService } from './../service/player.service';
 
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { SONGS } from '../features/Songs';
-import { elementAt } from 'rxjs';
+
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+
+import { elementAt, subscribeOn } from 'rxjs';
 import { DataProgressService } from '../service/data-progress.service';
+import { Song } from '../models/song.model';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements AfterViewInit, OnInit {
   progress: any = 0;
   className:string = 'fa-solid fa-play';
   isRandomActive: string = '';
   isUndoActive: string = '';
-  listSongs = SONGS;
-  presentNameSong:string = '';
-  presentImgSong: string = '../../assets/img/hustlogo.png';
-  presentAudioSrc: string = '';
+  listSongs: Array<any> = [];
   checkAudioPlaying: boolean = false;
   audio = new Audio();
   currentIndex: number = -1;
   newIndex:number = -3;
+  selectedSong:  any;
+  seekTime: number = 0;
 
-  constructor(private dataProgress$:DataProgressService ){
-    this.dataProgress$.dataProgressObs.subscribe(value => {
-      this.progress = Number(value);
+  constructor(private dataProgressSvc:DataProgressService, private songListService: PlayerService ){
+    this.dataProgressSvc.dataProgressObs.subscribe(value => {
+      this.progress = value;
+      this.seekTime = this.audio.duration / 100 * this.progress;
+      this.audio.currentTime = this.seekTime;
+    })
+
+    this.listSongs = this.songListService.songList;
+  }
+
+  ngOnInit(): void {
+    this.songListService.currentSong = this.songListService.emptySong;
+    this.songListService.currentSongObservable.subscribe (data => {
+      this.selectedSong = data;
     })
   }
 
   ngAfterViewInit() {
-    this.isUpdate();
-    this.isAudioEnded();
-    // this.onChange();
+    this.audio.ontimeupdate = () => {
+      if (this.audio.duration){
+
+        let progressPercent = Math.floor(this.audio.currentTime / this.audio.duration * 100)
+        this.progress = progressPercent;
+        this.songListService.timeSong = this.progress;
+      }
+
+
+    };
+    this.audio.onended = () => {
+      if( this.isUndoActive === 'active'){
+        this.audio.play();
+      }else {
+        this.doNextSong();
+      }
+    }
   }
-
-
 
   checkIndexSelection(index:number) {
     return index === this.currentIndex;
   }
 
-
   onClickSong(index:number) {
-    this.presentNameSong = this.listSongs[index].name;
-    this.presentImgSong = this.listSongs[index].image;
-    this.presentAudioSrc = this.listSongs[index].path;
-    this.audio.src = this.presentAudioSrc;
+    this.songListService.currentSong = this.listSongs[index];
+    this.audio.src = this.listSongs[index].path;
     this.checkAudioPlaying = true;
     this.className = 'fa-solid fa-pause';
     this.currentIndex = index;
     this.audio.play();
   }
-
-
 
   onAudioPlay(){
     if(this.checkAudioPlaying){
@@ -67,6 +87,8 @@ export class HomeComponent implements AfterViewInit {
     }
   }
 
+
+
   doNextSong () {
     if(this.isRandomActive !== 'active'){
       this.currentIndex++;
@@ -77,10 +99,8 @@ export class HomeComponent implements AfterViewInit {
       this.playRandomSong();
       this.currentIndex = this.newIndex;
     }
-    this.presentNameSong = this.listSongs[this.currentIndex].name;
-    this.presentImgSong = this.listSongs[this.currentIndex].image;
-    this.presentAudioSrc = this.listSongs[this.currentIndex].path;
-    this.audio.src = this.presentAudioSrc;
+    this.songListService.currentSong = this.listSongs[this.currentIndex];
+    this.audio.src = this.listSongs[this.currentIndex].path;
     this.checkAudioPlaying = true;
     this.className = 'fa-solid fa-pause';
     this.audio.load();
@@ -96,37 +116,13 @@ export class HomeComponent implements AfterViewInit {
       this.playRandomSong();
       this.currentIndex = this.newIndex;
     }
-    this.presentNameSong = this.listSongs[this.currentIndex].name;
-    this.presentImgSong = this.listSongs[this.currentIndex].image;
-    this.presentAudioSrc = this.listSongs[this.currentIndex].path;
-    this.audio.src = this.presentAudioSrc;
+    this.songListService.currentSong = this.listSongs[this.currentIndex];
+    this.audio.src = this.listSongs[this.currentIndex].path;
     this.checkAudioPlaying = true;
     this.className = 'fa-solid fa-pause';
     this.audio.load();
     this.audio.play();
   };
-
-  isUpdate(){
-    this.audio.ontimeupdate = () => {
-      if (this.audio.duration){
-
-        let progressPercent = Math.floor(this.audio.currentTime / this.audio.duration * 100)
-        this.progress = progressPercent;
-      }
-
-
-    };
-
-  }
-
-  onChange() {
-    this.progress.onchange = () => {
-
-      let seekTime = this.audio.duration / 100 * this.progress ;
-      this.audio.currentTime = seekTime;
-    }
-
-  }
 
   onClickRandomSong() {
     if(this.isRandomActive !== 'active') {
@@ -152,20 +148,6 @@ export class HomeComponent implements AfterViewInit {
       }while (this.newIndex === this.currentIndex);
     }
 
-  isAudioEnded() {
-    this.audio.onended = () => {
-      if( this.isUndoActive === 'active'){
-        this.audio.play();
-      }else {
-        this.doNextSong();
-      }
-    }
-  }
 
   playUndoSong(){}
-
-
-
-
-
 }

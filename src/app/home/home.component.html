@@ -1,18 +1,16 @@
 <section class="content">
   <div class="space"></div>
 
-  <div class="" style="color: #fff; font-size: 20px;">{{progress}}</div>
-
   <div class="content__container">
     <div class="player">
-      <div class="dashbroad">
-          <div class="dashbroad__cd">
-              <div class="dashbroad__cd--img" style="background-image:url({{presentImgSong}});"></div>
-          </div>
-          <div class="dashbroad__header">
-            <h3 class="dashbroad__title">Now playing:</h3>
-            <h2 class="dashbroad__name-song">{{presentNameSong}}</h2>
-        </div>
+      <div class="dashbroad" >
+            <div class="dashbroad__cd">
+              <div class="dashbroad__cd--img" style="background-image:url({{selectedSong.image}});"></div>
+            </div>
+            <div class="dashbroad__header">
+              <h3 class="dashbroad__title">Now playing:</h3>
+              <h2 class="dashbroad__name-song">{{selectedSong.name}}</h2>
+            </div>
 
         <audio
         #audioOption
@@ -57,7 +55,6 @@
   (doClickBackward)="doPrevSong()"
   (doClickRandom)="onClickRandomSong()"
   (doClickUndo)=" onClickRepeatSong()"
-
   [controlToggle] = "className"
   [isRandomActive]="isRandomActive"
   [isUndoActive]="isUndoActive"

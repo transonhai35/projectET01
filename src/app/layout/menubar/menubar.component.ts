@@ -1,3 +1,4 @@
+import { PlayerService } from 'src/app/service/player.service';
 import { DataProgressService } from './../../service/data-progress.service';
 import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 
@@ -21,15 +22,15 @@ export class MenubarComponent implements AfterViewInit {
   @Input() isUndoActive:string = '';
   @Input() progress:any = '';
 
-  constructor(private dataProgress$: DataProgressService){
-
+  constructor(private dataProgressSvc: DataProgressService, private playerSvc: PlayerService){
+    this.progress
   }
 
   ngAfterViewInit(): void {
-      this.dataProgress$.dataProgress = this.progress;
   }
 
-
-
+  onClickProgress() {
+    this.dataProgressSvc.dataProgress = this.progress;
+  }
 
 }
